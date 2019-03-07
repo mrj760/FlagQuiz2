@@ -217,6 +217,7 @@ public class MainActivity extends AppCompatActivity {
                 builder.create();
                 // show the dialogue
                 builder.show();
+                // Ok
             }
 
 
