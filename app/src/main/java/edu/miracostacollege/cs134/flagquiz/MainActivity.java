@@ -1,6 +1,8 @@
 package edu.miracostacollege.cs134.flagquiz;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -8,12 +10,15 @@ import android.os.Handler;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -239,6 +244,46 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_settings, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        Intent settingsIntent = new Intent(this, SettingsActivity.class);
+        startActivity(settingsIntent);
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    SharedPreferences.OnSharedPreferenceChangeListener
+            mSharedPreferenceChangeListener =
+            new SharedPreferences.OnSharedPreferenceChangeListener() {
+                @Override
+                public void onSharedPreferenceChanged(SharedPreferences sharedPreferences,
+                                                      String key) {
+                    if (key.equals(REGIONS))
+                    {
+                        String region = sharedPreferences.getString(REGIONS,
+                                getString(R.string.default_region));
+                        updateRegion(region);
+                        resetQuiz();
+                    }
+                    else if (key.equals(CHOICES))
+                    {
+                        mChoices = Integer.parseInt(sharedPreferences.getString(CHOICES,
+                                getString(R.string.default_choices)));
+                        updateChoices();
+                        resetQuiz();
+                    }
+                    Toast.makeText(MainActivity.this, R.string.restarting_quiz,
+                            Toast.LENGTH_SHORT).show();
+                }
+            };
+
 
 
 }
